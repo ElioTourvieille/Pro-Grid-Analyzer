@@ -1,0 +1,79 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/ui/Button.astro';
+import { ArrowRight } from "lucide-astro";
+---
+
+<Layout>
+	<div class="flex flex-col min-h-screen justify-center items-center">
+		<!-- Hero Section -->
+		<div class="mx-auto px-4 py-10">
+			<div class="text-center max-w-4xl mx-auto">
+				<h1 class="text-6xl md:text-7xl font-bold text-foreground mb-6 font-sans">
+					Optimise ton
+					<span class="text-primary">
+						grind
+					</span>
+					avec l'IA
+				</h1>
+				<p class="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto font-sans">
+					Analyse tes tournois et maximise ta rentabilité selon ton style, ton ROI et ton ABI.
+				</p>
+				<div class="flex flex-col sm:flex-row gap-4 justify-center">
+					<Button
+						variant="default"
+						size="lg"
+						class="bg-primary hover:bg-primary/90 text-primary-foreground transform hover:scale-105 font-sans"
+					>
+						<a href="/analyze">Commencer l'analyse</a>
+						<ArrowRight class="ml-2 size-5" />
+					</Button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Features Section -->
+		<div class="container mx-auto px-4 py-10">
+			<div class="text-center mb-16">
+				<h2 class="text-4xl font-bold text-foreground mb-4 font-sans">Comment ça marche ?</h2>
+				<p class="text-xl text-muted-foreground font-sans">3 étapes simples pour optimiser ton jeu</p>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+				<!-- Step 1 -->
+				<div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-border py-6 shadow-sm text-center">
+					<div class="px-6">
+						<div class="text-6xl mb-6">👤</div>
+						<h3 class="text-2xl font-bold text-card-foreground mb-4 font-sans">1. Définis ton profil</h3>
+						<p class="text-muted-foreground font-sans">
+							Entre ton ABI, ROI, style de jeu et tes préférences de tournois pour personnaliser l'analyse.
+						</p>
+					</div>
+				</div>
+
+				<!-- Step 2 -->
+				<div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-border py-6 shadow-sm text-center">
+					<div class="px-6">
+						<div class="text-6xl mb-6">📊</div>
+						<h3 class="text-2xl font-bold text-card-foreground mb-4 font-sans">2. Upload tes données</h3>
+						<p class="text-muted-foreground font-sans">
+							Importe ton historique de tournois en CSV. L'IA analyse tes patterns de jeu.
+						</p>
+					</div>
+				</div>
+
+				<!-- Step 3 -->
+				<div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-border py-6 shadow-sm text-center">
+					<div class="px-6">
+						<div class="text-6xl mb-6">🎯</div>
+						<h3 class="text-2xl font-bold text-card-foreground mb-4 font-sans">3. Reçois tes recommandations</h3>
+						<p class="text-muted-foreground font-sans">
+							Obtiens une liste personnalisée de tournois avec ROI prédit et explications.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</Layout>
+ 

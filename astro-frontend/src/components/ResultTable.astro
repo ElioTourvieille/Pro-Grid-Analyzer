@@ -1,0 +1,154 @@
+---
+// ResultTable.astro - Affichage des résultats d'analyse
+---
+
+<script>
+	// Écouter les résultats d'analyse
+	document.addEventListener('DOMContentLoaded', () => {
+		window.addEventListener('analysisComplete', (event: any) => {
+			const { results, summary } = event.detail;
+			updateResults(results, summary);
+		});
+	});
+
+	function updateResults(results: any[], summary: any) {
+		if (!summary) {
+			console.error("Résumé (summary) manquant dans la réponse backend !");
+			return;
+		}
+		// Utilise les nouvelles clés du summary
+		updateSummaryCards(summary.max_proba, summary.total_tournois);
+		updateTable(results);
+	}
+
+	function updateSummaryCards(maxProba: number, totalTournois: number) {
+		const roiElement = document.getElementById('roi-predicted');
+		const analyzedElement = document.getElementById('tournaments-analyzed');
+		// Card 3 supprimée
+		if (roiElement) roiElement.textContent = `${(maxProba * 100).toFixed(1)}%`;
+		if (analyzedElement) analyzedElement.textContent = totalTournois != null ? totalTournois.toString() : '0';
+	}
+
+	function updateTable(results: any[]) {
+		const tbody = document.getElementById('results-table-body');
+		if (!tbody) return;
+		
+		// Les résultats sont déjà triés côté backend, on prend les 5 premiers
+		tbody.innerHTML = results.map((result: any) => `
+			<tr class="border-b border-border/10">
+				<td class="py-4 text-card-foreground font-medium font-sans">${result.Nom}</td>
+				<td class="py-4 text-muted-foreground font-sans">${(result.Mise + result.Rake).toFixed(2)}€</td>
+				<td class="py-4 text-muted-foreground font-sans">${result.Participants}</td>
+				<td class="py-4">
+					<span class="text-green-400 font-semibold font-sans">${(result.proba_profitable * 100).toFixed(1)}%</span>
+				</td>
+				<td class="py-4 text-muted-foreground text-sm font-sans">
+					${result.raison}
+				</td>
+			</tr>
+		`).join('');
+	}
+
+	function getConfidenceClass(confidence: number) {
+		if (confidence > 0.8) return 'bg-green-100 text-green-800 border-transparent';
+		if (confidence > 0.6) return 'bg-yellow-100 text-yellow-800 border-transparent';
+		return 'bg-red-100 text-red-800 border-transparent';
+	}
+
+	function getConfidenceText(confidence: number) {
+		if (confidence > 0.8) return 'Élevée';
+		if (confidence > 0.6) return 'Moyenne';
+		return 'Faible';
+	}
+</script>
+
+<div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-border py-6 shadow-sm">
+	<div class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6">
+		<div class="leading-none font-semibold text-2xl text-card-foreground font-sans">Résultats de l'Analyse</div>
+	</div>
+	
+	<div class="px-6">
+		<!-- Summary Cards -->
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+			<div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-green-500/30 py-6 shadow-sm">
+				<div class="px-6">
+					<div class="flex items-center space-x-3">
+						<div class="text-3xl">📈</div>
+						<div>
+							<p class="text-green-400 text-sm font-medium font-sans">Meilleure proba de profitabilité</p>
+							<p id="roi-predicted" class="text-card-foreground text-2xl font-bold font-sans">18.5%</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-blue-500/30 py-6 shadow-sm">
+				<div class="px-6">
+					<div class="flex items-center space-x-3">
+						<div class="text-3xl">🎯</div>
+						<div>
+							<p class="text-blue-400 text-sm font-medium font-sans">Tournois analysés</p>
+							<p id="tournaments-analyzed" class="text-card-foreground text-2xl font-bold font-sans">12</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Tournament Recommendations -->
+		<div class="space-y-4">
+			<h3 class="text-xl font-semibold text-card-foreground mb-4 font-sans">Tournois Recommandés</h3>
+			
+			<div class="overflow-x-auto">
+				<table class="w-full text-left">
+					<thead>
+						<tr class="border-b border-border">
+							<th class="pb-3 text-muted-foreground font-medium font-sans">Tournoi</th>
+							<th class="pb-3 text-muted-foreground font-medium font-sans">Buy-in total</th>
+							<th class="pb-3 text-muted-foreground font-medium font-sans">Participants</th>
+							<th class="pb-3 text-muted-foreground font-medium font-sans">Profitabilité</th>
+							<th class="pb-3 text-muted-foreground font-medium font-sans">Raison</th>
+						</tr>
+					</thead>
+					<tbody id="results-table-body" class="space-y-2">
+						<tr class="border-b border-border/10">
+							<td class="py-4 text-card-foreground font-medium font-sans">Sunday Million</td>
+							<td class="py-4 text-muted-foreground font-sans">215€</td>
+							<td class="py-4 text-muted-foreground font-sans">1,234</td>
+							<td class="py-4">
+								<span class="text-green-400 font-semibold font-sans">+22.3%</span>
+							</td>
+							<td class="py-4 text-muted-foreground text-sm font-sans">
+								Style tight-aggressive performe bien dans les gros champs
+							</td>
+						</tr>
+						
+						<tr class="border-b border-border/10">
+							<td class="py-4 text-card-foreground font-medium font-sans">Spin & Go 100€</td>
+							<td class="py-4 text-muted-foreground font-sans">100€</td>
+							<td class="py-4 text-muted-foreground font-sans">500</td>
+							<td class="py-4">
+								<span class="text-green-400 font-semibold font-sans">+15.7%</span>
+							</td>
+							<td class="py-4 text-muted-foreground text-sm font-sans">
+								ROI historique positif sur ce format
+							</td>
+						</tr>
+						
+						<tr class="border-b border-border/10">
+							<td class="py-4 text-card-foreground font-medium font-sans">Bounty Builder</td>
+							<td class="py-4 text-muted-foreground font-sans">55€</td>
+							<td class="py-4 text-muted-foreground font-sans">300</td>
+							<td class="py-4">
+								<span class="text-green-400 font-semibold font-sans">+18.9%</span>
+							</td>
+							<td class="py-4 text-muted-foreground text-sm font-sans">
+								Format bounty adapté à ton style agressif
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div> 

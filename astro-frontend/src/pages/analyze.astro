@@ -1,0 +1,49 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TournamentUploader from '../components/TournamentUploader.astro';
+import ResultTable from '../components/ResultTable.astro';
+---
+
+<Layout>
+	<div class="min-h-screen bg-background">
+		<div class="container mx-auto px-4 py-8">
+			<!-- Header -->
+			<div class="text-center mb-12">
+				<h1 class="text-4xl font-bold text-foreground mb-4 font-sans">Analyse de Tournois</h1>
+				<p class="text-xl text-muted-foreground max-w-2xl mx-auto font-sans">
+					Optimise ton grind avec l'IA. Analyse tes performances et découvre les tournois qui te conviennent.
+				</p>
+			</div>
+
+			<!-- Upload Section -->
+			<div class="max-w-4xl mx-auto space-y-8">
+				<TournamentUploader />
+			</div>
+
+			<!-- Results Section (initially hidden) -->
+			<div id="results" class="max-w-6xl mx-auto mt-12 hidden">
+				<ResultTable />
+			</div>
+		</div>
+	</div>
+</Layout>
+
+<script>
+	// Handle analysis results
+	document.addEventListener('DOMContentLoaded', () => {
+		const resultsSection = document.getElementById('results');
+		
+			window.addEventListener('analysisComplete', (event: any) => {
+		if (resultsSection) {
+			resultsSection.classList.remove('hidden');
+			resultsSection.scrollIntoView({ behavior: 'smooth' });
+			
+			// Pass data to ResultTable component
+			const resultTable = document.querySelector('result-table');
+			if (resultTable) {
+				resultTable.setAttribute('data-results', JSON.stringify(event.detail.results));
+			}
+		}
+	});
+	});
+</script> 
