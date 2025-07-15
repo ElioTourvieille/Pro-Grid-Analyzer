@@ -24,7 +24,7 @@ export interface AnalysisResult {
   predictedRoi: number;
   confidence: number;
   reasoning: string;
-  recommendation: 'high' | 'medium' | 'low';
+  recommendation: "high" | "medium" | "low";
 }
 
 export interface AnalysisRequest {
@@ -43,16 +43,16 @@ export interface AnalysisResponse {
 
 function mapTournamentDataToBackend(t: TournamentData) {
   return {
-    "Nom": t.name,
-    "Mise": t.buyIn,
-    "Participants": t.players,
+    Nom: t.name,
+    Mise: t.buyIn,
+    Participants: t.players,
     "Date :": t.startTime,
-    "Rake": 0,
-    "Compétence": 70,
+    Rake: 0,
+    Compétence: 70,
     "Compétence moyenne": 65,
-    "Nb_jeux": 50,
-    "Type": t.type,
-    "Prix": t.prizePool,
+    Nb_jeux: 50,
+    Type: t.type,
+    Prix: t.prizePool,
   };
 }
 
@@ -61,7 +61,7 @@ function mapProfileToBackend(p: PlayerProfile) {
     ABI: p.abi,
     ROI_total: p.roi,
     Style: p.style,
-    heures: p.tournamentTypes, // Le backend attend 'heures' pour les types
+    heures: p.tournamentTypes,
   };
 }
 
@@ -72,7 +72,7 @@ function mapAnalysisRequestToBackend(data: AnalysisRequest) {
   };
 }
 
-const API_BASE_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:8000";
 
 class ApiClient {
   private baseUrl: string;
@@ -86,10 +86,10 @@ class ApiClient {
     options: RequestInit = {}
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    
+
     const config: RequestInit = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...options.headers,
       },
       ...options,
@@ -97,22 +97,22 @@ class ApiClient {
 
     try {
       const response = await fetch(url, config);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       return await response.json();
     } catch (error) {
-      console.error('API request failed:', error);
+      console.error("API request failed:", error);
       throw error;
     }
   }
 
   async analyzeTournaments(data: AnalysisRequest): Promise<AnalysisResponse> {
     const backendData = mapAnalysisRequestToBackend(data);
-    const backendResponse = await this.request<any>('/api/predict', {
-      method: 'POST',
+    const backendResponse = await this.request<any>("/api/predict", {
+      method: "POST",
       body: JSON.stringify(backendData),
     });
     return backendResponse;
@@ -120,10 +120,10 @@ class ApiClient {
 
   async uploadTournaments(file: File): Promise<TournamentData[]> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
-    return this.request<TournamentData[]>('/api/upload', {
-      method: 'POST',
+    return this.request<TournamentData[]>("/api/upload", {
+      method: "POST",
       body: formData,
       headers: {
         // Remove Content-Type for FormData
@@ -133,10 +133,10 @@ class ApiClient {
 
   async analyzeFile(file: File): Promise<any> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
-    const backendResponse = await this.request<any>('/api/analyze', {
-      method: 'POST',
+    const backendResponse = await this.request<any>("/api/analyze", {
+      method: "POST",
       body: formData,
       headers: {
         // Remove Content-Type for FormData
@@ -144,8 +144,6 @@ class ApiClient {
     });
     return backendResponse;
   }
-
-
 }
 
-export const apiClient = new ApiClient(); 
+export const apiClient = new ApiClient();

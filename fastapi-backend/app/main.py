@@ -5,7 +5,7 @@ from typing import List
 import uvicorn
 import numpy as np
 
-from model_utils import model, _get_mock_raisons
+from .model_utils import model, _get_mock_raisons
 import pandas as pd
 
 app = FastAPI(title="Pro Grid Analyzer API", version="1.0.0")
